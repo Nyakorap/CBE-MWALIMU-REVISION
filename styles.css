@@ -1,0 +1,27 @@
+
+  * {
+    text-align: center;
+    box-sizing: border-box;
+    }
+body{
+    border: 8px;
+    border-color: aqua;
+   }
+#columns{
+    clear: both;
+    padding: 12px;
+    display: table;
+    content: " ";
+    float: left;
+    width: 100%;
+    min-height: 311px;
+    display: inline;
+    font-size: 68px;
+    font-weight: bolder;
+    margin-top: 54px;
+    /*margin-left: 50%;*/
+    background-attachment: fixed;
+
+}
+
+@media and screen 
