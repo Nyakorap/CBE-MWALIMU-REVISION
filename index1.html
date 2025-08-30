@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up & Login — M-Pesa Subscription (Ksh 200)</title>
+  <style>
+    :root{
+      --bg:#0f172a;        /* slate-900 */
+      --panel:#111827;     /* gray-900 */
+      --muted:#94a3b8;     /* slate-400 */
+      --text:#e5e7eb;      /* gray-200 */
+      --accent:#22c55e;    /* green-500 */
+      --danger:#ef4444;    /* red-500 */
+      --ring:#334155;      /* slate-700 */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, #1e293b 0%, #0b1224 45%, var(--bg) 70%) fixed;
+      color:var(--text); line-height:1.4; min-height:100dvh; display:grid; place-items:center; padding:24px;
+    }
+    .card{
+      width:100%; max-width:960px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid #1f2937; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .wrap{display:grid; grid-template-columns: 1.1fr .9fr; gap:0}
+    @media (max-width: 900px){ .wrap{grid-template-columns:1fr} }
+    header{
+      padding:24px 28px; border-bottom:1px solid #1f2937; display:flex; align-items:center; gap:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+    }
+    .logo{
+      width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
+      background:conic-gradient(from 180deg at 50% 50%, #22c55e, #14b8a6, #3b82f6, #22c55e); color:white; font-weight:700;
+      box-shadow:0 4px 16px rgba(34,197,94,.4);
+    }
+    h1{font-size:18px; margin:0}
+    .muted{color:var(--muted); font-size:14px}
+    .content{padding:24px; border-right:1px solid #1f2937}
+    .side{padding:24px}
+    .tabs{display:flex; gap:8px; margin-bottom:16px}
+    .tab{
+      border:1px solid #1f2937; background:#0b1224; color:#cbd5e1; padding:10px 14px; border-radius:12px;
+      cursor:pointer; user-select:none; transition:.2s;
+    }
+    .tab[aria-selected="true"]{outline:2px solid var(--ring); background:#0f1630}
+    form{display:grid; gap:12px}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width: 600px){ .row{grid-template-columns:1fr} }
+    label{font-size:14px; color:#cbd5e1}
+    input, button, .note, textarea{
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid #1f2937; background:#0b1224;
+      color:var(--text); outline:none; transition:border-color .15s, box-shadow .15s;
+    }
+    input:focus{border-color:#334155; box-shadow:0 0 0 4px rgba(51,65,85,.35)}
+    .help{font-size:12px; color:var(--muted); margin-top:-6px}
+    .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
+    .btn{
+      display:inline-flex; justify-content:center; align-items:center; gap:8px; padding:12px 16px; border-radius:12px;
+      border:1px solid transparent; cursor:pointer; font-weight:600; letter-spacing:.2px;
+      background:linear-gradient(180deg, #22c55e, #16a34a); color:#06290f; text-shadow:0 1px 0 rgba(255,255,255,.15);
+      box-shadow:0 8px 24px rgba(34,197,94,.35);
+    }
+    .btn:focus{outline:3px solid rgba(34,197,94,.4)}
+    .btn.secondary{background:#0b1224; color:#cbd5e1; border-color:#1f2937; box-shadow:none}
+    .error{background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.4); color:#fecaca; padding:10px 12px; border-radius:10px; font-size:14px}
+    .success{background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.4); color:#bbf7d0; padding:10px 12px; border-radius:10px; font-size:14px}
+    .note{background:#0b1224; border:1px dashed #334155; color:#e2e8f0}
+    .paybox{
+      border:1px dashed #334155; border-radius:14px; padding:14px; background:#0b1224; margin-top:8px;
+    }
+    .paybox h3{margin:0 0 8px 0; font-size:15px}
+    .kv{display:grid; grid-template-columns:auto 1fr; gap:6px 10px; align-items:center; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:14px}
+    .kv .k{color:#a5b4fc}
+    .kv .v{color:#fef08a}
+    .foot-hint{font-size:12px; color:#94a3b8; margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="card" role="application" aria-label="Signup and Login">
+    <header>
+      <div class="logo" aria-hidden="true">₭</div>
+      <div>
+        <h1>Subscription Access — Ksh 200</h1>
+        <div class="muted">Pay via M-Pesa Paybill, then sign up and log in with your confirmation code.</div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <!-- LEFT: Forms -->
+      <div class="content">
+        <div class="tabs" role="tablist" aria-label="Auth tabs">
+          <button class="tab" role="tab" id="tab-signup" aria-selected="true" aria-controls="panel-signup">Sign Up</button>
+          <button class="tab" role="tab" id="tab-login" aria-selected="false" aria-controls="panel-login">Login</button>
+        </div>
+
+        <!-- Sign Up Panel -->
+        <section id="panel-signup" role="tabpanel" aria-labelledby="tab-signup">
+          <form id="signupForm" novalidate>
+            <div class="row">
+              <div>
+                <label for="fname">First Name</label>
+                <input id="fname" name="fname" type="text" placeholder="e.g. Amina" autocomplete="given-name" required />
+              </div>
+              <div>
+                <label for="mname">Middle Name</label>
+                <input id="mname" name="mname" type="text" placeholder="(optional)" autocomplete="additional-name" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label for="lname">Last Name</label>
+                <input id="lname" name="lname" type="text" placeholder="e.g. Hassan" autocomplete="family-name" required />
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="e.g. amina@example.com" autocomplete="email" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Min 8 chars" minlength="8" required />
+                <div class="help">Use at least 8 characters with letters and numbers.</div>
+              </div>
+              <div>
+                <label for="confirm">Confirm Password</label>
+                <input id="confirm" name="confirm" type="password" placeholder="Re-enter password" minlength="8" required />
+              </div>
+            </div>
+
+            <div>
+              <label for="mpesaCode">M-Pesa Confirmation Code</label>
+              <input id="mpesaCode" name="mpesaCode" type="text" placeholder="e.g. QJ45XY123 (from M-Pesa SMS)" required />
+              <div class="help">Pay Ksh 200 first (details on the right). After payment, enter the confirmation code from the SMS here.</div>
+            </div>
+
+            <div id="signupMsg" aria-live="polite"></div>
+
+            <div class="row">
+              <button class="btn" type="submit">Create Account & Activate</button>
+              <button class="btn secondary" type="button" id="toLogin">Go to Login</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Login Panel -->
+        <section id="panel-login" role="tabpanel" aria-labelledby="tab-login" hidden>
+          <form id="loginForm" novalidate>
+            <div class="row">
+              <div>
+                <label for="loginEmail">Email</label>
+                <input id="loginEmail" name="loginEmail" type="email" placeholder="your@email.com" autocomplete="email" required />
+              </div>
+              <div>
+                <label for="loginCode">M-Pesa Confirmation Code</label>
+                <input id="loginCode" name="loginCode" type="text" placeholder="Code from M-Pesa SMS" required />
+              </div>
+            </div>
+
+            <div id="loginMsg" aria-live="polite"></div>
+
+            <div class="row">
+              <button class="btn" type="submit">Login</button>
+              <button class="btn secondary" type="button" id="toSignup">Back to Sign Up</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- RIGHT: Payment info & notes -->
+      <aside class="side">
+        <div class="paybox" role="complementary" aria-label="Payment Instructions">
+          <h3>Pay Subscription (Ksh 200) via M-Pesa Paybill</h3>
+          <div class="kv">
+            <div class="k">Business No:</div><div class="v">247247</div>
+            <div class="k">Account No:</div><div class="v">0710547985</div>
+            <div class="k">Amount:</div><div class="v">Ksh 200</div>
+          </div>
+          <p class="foot-hint">After payment, you’ll receive an SMS with a confirmation code. Use that code to activate your account and to log in.</p>
+        </div>
+
+        <div class="note" aria-label="Demo Notice" style="margin-top:14px;">
+          <strong>Demo only:</strong> This example stores activation in your browser’s <em>localStorage</em>.
+          For a real app, verify payments server-side (e.g., via M-Pesa APIs) and never store passwords insecurely.
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // --- Tab logic ---
+    const tabSignup = document.getElementById('tab-signup');
+    const tabLogin  = document.getElementById('tab-login');
+    const panelSignup = document.getElementById('panel-signup');
+    const panelLogin  = document.getElementById('panel-login');
+
+    function activateTab(which){
+      const isSignup = which === 'signup';
+      tabSignup.setAttribute('aria-selected', isSignup ? 'true' : 'false');
+      tabLogin.setAttribute('aria-selected', isSignup ? 'false' : 'true');
+      panelSignup.hidden = !isSignup;
+      panelLogin.hidden  = isSignup;
+    }
+    tabSignup.addEventListener('click', () => activateTab('signup'));
+    tabLogin.addEventListener('click',  () => activateTab('login'));
+    document.getElementById('toLogin').addEventListener('click', () => activateTab('login'));
+    document.getElementById('toSignup').addEventListener('click', () => activateTab('signup'));
+
+    // --- Helpers ---
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const codeRe  = /^[A-Za-z0-9]{8,12}$/; // MPesa codes often ~10 chars, alphanumeric
+
+    function showMessage(el, type, text){
+      el.innerHTML = '';
+      if(!text) return;
+      const box = document.createElement('div');
+      box.className = type === 'error' ? 'error' : 'success';
+      box.textContent = text;
+      el.appendChild(box);
+    }
+
+    function saveUser({email, passwordHash, code, profile}){
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      users[email.toLowerCase()] = { passwordHash, code, active:true, profile, createdAt: new Date().toISOString() };
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function getUser(email){
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      return users[email.toLowerCase()];
+    }
+
+    // Lightweight hash (demo-only; do NOT use in production)
+    async function cheapHash(str){
+      const enc = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // --- Sign Up ---
+    const signupForm = document.getElementById('signupForm');
+    const signupMsg  = document.getElementById('signupMsg');
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage(signupMsg, null, '');
+
+      const fname   = signupForm.fname.value.trim();
+      const mname   = signupForm.mname.value.trim();
+      const lname   = signupForm.lname.value.trim();
+      const email   = signupForm.email.value.trim();
+      const pass    = signupForm.password.value;
+      const confirm = signupForm.confirm.value;
+      const code    = signupForm.mpesaCode.value.trim();
+
+      // Basic validation
+      if(!fname || !lname || !email || !pass || !confirm || !code){
+        showMessage(signupMsg,'error','Please fill in all required fields.');
+        return;
+      }
+      if(!emailRe.test(email)){
+        showMessage(signupMsg,'error','Enter a valid email address.');
+        return;
+      }
+      if(pass.length < 8){
+        showMessage(signupMsg,'error','Password must be at least 8 characters.');
+        return;
+      }
+      if(pass !== confirm){
+        showMessage(signupMsg,'error','Passwords do not match.');
+        return;
+      }
+      if(!codeRe.test(code)){
+        showMessage(signupMsg,'error','Enter a valid M-Pesa confirmation code (8–12 letters/numbers).');
+        return;
+      }
+      if(getUser(email)){
+        showMessage(signupMsg,'error','An account with this email already exists. Try logging in.');
+        return;
+      }
+
+      const passwordHash = await cheapHash(pass);
+      const profile = { fname, mname, lname };
+
+      // In production: verify payment server-side before activating.
+      saveUser({email, passwordHash, code, profile});
+
+      showMessage(
+        signupMsg,
+        'success',
+        'Account created and activated! You can now log in using your email and the same M-Pesa confirmation code.'
+      );
+      // Optionally auto-switch to login and prefill
+      setTimeout(() => {
+        activateTab('login');
+        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginCode').value  = code;
+      }, 800);
+    });
+
+    // --- Login ---
+    const loginForm = document.getElementById('loginForm');
+    const loginMsg  = document.getElementById('loginMsg');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showMessage(loginMsg,null,'');
+      const email = loginForm.loginEmail.value.trim();
+      const code  = loginForm.loginCode.value.trim();
+
+      if(!emailRe.test(email)){
+        showMessage(loginMsg,'error','Enter a valid email address.');
+        return;
+      }
+      if(!codeRe.test(code)){
+        showMessage(loginMsg,'error','Enter a valid M-Pesa confirmation code.');
+        return;
+      }
+      const user = getUser(email);
+      if(!user){
+        showMessage(loginMsg,'error','No account found for that email. Please sign up first.');
+        return;
+      }
+      if(!user.active){
+        showMessage(loginMsg,'error','Your account is not active yet. Complete payment and activation.');
+        return;
+      }
+      if(user.code !== code){
+        showMessage(loginMsg,'error','Incorrect confirmation code.');
+        return;
+      }
+      // Demo "session"
+      sessionStorage.setItem('session', JSON.stringify({ email, loggedInAt: new Date().toISOString() }));
+      showMessage(loginMsg,'success',`Welcome, ${user.profile?.fname || 'there'}! You are now logged in.`);
+    });
+  </script>
+</body>
+</html>
