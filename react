@@ -1,0 +1,168 @@
+import { useState } from "react";
+import axios from "axios";
+
+export default function SignupLogin() {
+  const [tab, setTab] = useState("signup");
+  const [signupData, setSignupData] = useState({
+    fname: "",
+    mname: "",
+    lname: "",
+    email: "",
+    password: "",
+    confirm: "",
+    mpesaCode: "",
+  });
+  const [loginData, setLoginData] = useState({
+    email: "",
+    mpesaCode: "",
+  });
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e, formSetter) => {
+    const { name, value } = e.target;
+    formSetter((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:5000/api/signup", signupData);
+      setMessage(res.data.message);
+      setTab("login");
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Signup failed.");
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:5000/api/login", loginData);
+      setMessage(res.data.message);
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Login failed.");
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto bg-slate-900 text-white rounded-2xl shadow-lg p-6">
+      <div className="flex space-x-4 mb-6">
+        <button
+          className={`px-4 py-2 rounded-lg ${
+            tab === "signup" ? "bg-green-600" : "bg-slate-700"
+          }`}
+          onClick={() => setTab("signup")}
+        >
+          Sign Up
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg ${
+            tab === "login" ? "bg-green-600" : "bg-slate-700"
+          }`}
+          onClick={() => setTab("login")}
+        >
+          Login
+        </button>
+      </div>
+
+      {tab === "signup" && (
+        <form onSubmit={handleSignup} className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              name="fname"
+              placeholder="First Name"
+              className="p-2 rounded-lg text-black"
+              value={signupData.fname}
+              onChange={(e) => handleChange(e, setSignupData)}
+              required
+            />
+            <input
+              name="mname"
+              placeholder="Middle Name"
+              className="p-2 rounded-lg text-black"
+              value={signupData.mname}
+              onChange={(e) => handleChange(e, setSignupData)}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              name="lname"
+              placeholder="Last Name"
+              className="p-2 rounded-lg text-black"
+              value={signupData.lname}
+              onChange={(e) => handleChange(e, setSignupData)}
+              required
+            />
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              className="p-2 rounded-lg text-black"
+              value={signupData.email}
+              onChange={(e) => handleChange(e, setSignupData)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="p-2 rounded-lg text-black"
+              value={signupData.password}
+              onChange={(e) => handleChange(e, setSignupData)}
+              required
+            />
+            <input
+              name="confirm"
+              type="password"
+              placeholder="Confirm Password"
+              className="p-2 rounded-lg text-black"
+              value={signupData.confirm}
+              onChange={(e) => handleChange(e, setSignupData)}
+              required
+            />
+          </div>
+          <input
+            name="mpesaCode"
+            placeholder="M-Pesa Confirmation Code"
+            className="p-2 rounded-lg text-black w-full"
+            value={signupData.mpesaCode}
+            onChange={(e) => handleChange(e, setSignupData)}
+            required
+          />
+          <button className="w-full bg-green-600 py-2 rounded-lg font-bold hover:bg-green-700">
+            Sign Up
+          </button>
+        </form>
+      )}
+
+      {tab === "login" && (
+        <form onSubmit={handleLogin} className="space-y-3">
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="p-2 rounded-lg text-black w-full"
+            value={loginData.email}
+            onChange={(e) => handleChange(e, setLoginData)}
+            required
+          />
+          <input
+            name="mpesaCode"
+            placeholder="M-Pesa Confirmation Code"
+            className="p-2 rounded-lg text-black w-full"
+            value={loginData.mpesaCode}
+            onChange={(e) => handleChange(e, setLoginData)}
+            required
+          />
+          <button className="w-full bg-green-600 py-2 rounded-lg font-bold hover:bg-green-700">
+            Login
+          </button>
+        </form>
+      )}
+
+      {message && <p className="mt-4 text-sm text-yellow-300">{message}</p>}
+    </div>
+  );
+}
